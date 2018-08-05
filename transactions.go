@@ -6,7 +6,7 @@ import (
 	"github.com/davidsteinsland/ynab-go/ynab"
 )
 
-func GetTransactions(budgetMgr *BudgetManager, client *ynab.Client) (map[string]ynab.HybridTransaction, error) {
+func GetTransactions(budgetMgr *BudgetManager, client *ynab.Client) (*map[string]ynab.HybridTransaction, error) {
 	transactionsByID := make(map[string]ynab.HybridTransaction)
 	for _, bID := range budgetMgr.IDs() {
 		bConfig := budgetMgr.GetByID(bID)
@@ -23,7 +23,7 @@ func GetTransactions(budgetMgr *BudgetManager, client *ynab.Client) (map[string]
 			}
 		}
 	}
-	return transactionsByID, nil
+	return &transactionsByID, nil
 }
 
 func CopyTransactions(srcMgr, dstMgr *BudgetManager, client *ynab.Client) ([]ynab.TransactionDetail, error) {
@@ -35,7 +35,7 @@ func CopyTransactions(srcMgr, dstMgr *BudgetManager, client *ynab.Client) ([]yna
 	for _, bID := range dstMgr.IDs() {
 		var bulkSubmit []ynab.SaveTransaction
 		bConfig := dstMgr.GetByID(bID)
-		for tID, t := range transactionsByID {
+		for tID, t := range *transactionsByID {
 			save := ynab.SaveTransaction{
 				bConfig.AccountID,
 				t.Date,

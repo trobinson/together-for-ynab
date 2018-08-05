@@ -17,7 +17,7 @@ type Budget struct {
 	Account    string
 	AccountID  string
 	Categories []Category
-	FlagColor  string `mapstrucutre:"flag-color"`
+	FlagColor  string `mapstructure:"flag-color"`
 }
 
 type BudgetManager struct {

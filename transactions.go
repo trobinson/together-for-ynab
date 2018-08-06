@@ -36,21 +36,23 @@ func CopyTransactions(srcMgr, dstMgr *BudgetManager, client *ynab.Client) ([]yna
 		var bulkSubmit []ynab.SaveTransaction
 		bConfig := dstMgr.GetByID(bID)
 		for tID, t := range *transactionsByID {
-			save := ynab.SaveTransaction{
-				bConfig.AccountID,
-				t.Date,
-				t.Amount,
-				"",
-				t.PayeeName,
-				"",
-				"",
-				"",
-				false,
-				*t.FlagColor,
-				GetMD5Hash(tID),
-			}
+			if t.Amount < 0 {
+				save := ynab.SaveTransaction{
+					bConfig.AccountID,
+					t.Date,
+					t.Amount,
+					"",
+					t.PayeeName,
+					"",
+					"",
+					"",
+					false,
+					*t.FlagColor,
+					GetMD5Hash(tID),
+				}
 
-			bulkSubmit = append(bulkSubmit, save)
+				bulkSubmit = append(bulkSubmit, save)
+			}
 		}
 
 		log.Printf("  Submitting %d transactions\n", len(bulkSubmit))

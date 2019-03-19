@@ -32,39 +32,43 @@ func main() {
 		log.Fatal(err)
 	}
 
-	/* Get source budget names from config */
-	var srcBudgets []Budget
-	viper.UnmarshalKey("source-budgets", &srcBudgets)
-	srcBudgetMan := NewBudgetManager(srcBudgets, apiBudgets)
+	/* Get tasks from config */
+	var tasks []Task
+	viper.UnmarshalKey("tasks", &tasks)
 
-	/* Get joint budget names from config */
-	var jntBudgets []Budget
-	viper.UnmarshalKey("joint-budgets", &jntBudgets)
-	jntBudgetMan := NewBudgetManager(jntBudgets, apiBudgets)
+	for i, task := range tasks {
+		log.Printf("Task %d\n", i)
 
-	/* Get source budget Category IDs from API */
-	log.Println("Retrieving IDs for configured categories")
-	err = LoadCategories(&srcBudgetMan, client)
-	if err != nil {
-		log.Fatal(err)
-	}
+		/* Get source budget names from config */
+		srcBudgetMan := NewBudgetManager(task.SourceBudgets, apiBudgets)
 
-	/* Get joint budget AccountIDs from API */
-	log.Println("Retrieving IDs for configured accounts")
-	err = LoadAccounts(&jntBudgetMan, client)
-	if err != nil {
-		log.Fatal(err)
-	}
+		/* Get joint budget names from config */
+		jntBudgetMan := NewBudgetManager(task.JointBudgets, apiBudgets)
 
-	/* Process source transactions for adding to joint budget accounts */
-	log.Println("Copying transactions")
-	details, err := CopyTransactions(&srcBudgetMan, &jntBudgetMan, client)
-	if err != nil {
-		log.Fatal(err)
-	}
+		/* Get source budget Category IDs from API */
+		log.Println("Retrieving IDs for configured categories")
+		err = LoadCategories(&srcBudgetMan, client)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	/* Print any details that come back from the API */
-	for _, detail := range details {
-		log.Println(detail)
+		/* Get joint budget AccountIDs from API */
+		log.Println("Retrieving IDs for configured accounts")
+		err = LoadAccounts(&jntBudgetMan, client)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		/* Process source transactions for adding to joint budget accounts */
+		log.Println("Copying transactions")
+		details, err := CopyTransactions(&srcBudgetMan, &jntBudgetMan, client)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		/* Print any details that come back from the API */
+		for _, detail := range details {
+			log.Println(detail)
+		}
 	}
 }

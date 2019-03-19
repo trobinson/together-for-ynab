@@ -1,15 +1,26 @@
 api-key: "thisismyapikey123"
-source-budgets:
-  - name: "My Budget"
-    categories:
-      - group: True Expenses
-        name: Joint Account Shopping
-    flag-color: red
-  - name: "My Partners Budget"
-    categories:
-      - group: Other Expenses
-        name: Joint Account Shopping
-    flag-color: blue
-joint-budgets:
-  - name: Joint Budget
-    account: Joint Account
+tasks:
+  - source-budgets:
+      - name: "My Budget"
+        categories:
+          - group: True Expenses
+            name: Joint Account Shopping
+        flag-color: red
+      - name: "My Partners Budget"
+        categories:
+          - group: Other Expenses
+            name: Joint Account Shopping
+        flag-color: blue
+    joint-budgets:
+      - name: Joint Budget
+        account: Joint Account
+
+  - source-budgets:
+      - name: "Joint Budget"
+        categories:
+          - group: True Expenses
+            name: My Spending On Joint Card
+        flag-color: red
+    joint-budgets:
+      - name: My Budget
+        account: Joint Card
